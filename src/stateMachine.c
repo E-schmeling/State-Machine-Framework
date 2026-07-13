@@ -65,7 +65,7 @@ uint8_t init_state_machine(state_machine_t *stateMachine, state_t *states, subst
         uint8_t ret = stateMachine->states[0].enter();
         if (ret != 0)
         {
-            return 8; // Error: Enter function of init state failed
+            return 0b00010000 + ret; // Error: Enter function of init state failed
         }
     }
 
@@ -74,7 +74,7 @@ uint8_t init_state_machine(state_machine_t *stateMachine, state_t *states, subst
         uint8_t ret = stateMachine->substates[0].enter();
         if (ret != 0)
         {
-            return 9; // Error: Enter function of init substate failed
+            return 0b00100000 + ret; // Error: Enter function of init substate failed
         }
     }
 
