@@ -200,6 +200,65 @@ uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_s
     }
 }
 
+
+uint8_t run_state_machine(state_machine_t *sm)
+{
+    if (sm == NULL)
+    {
+        return 1; // Error: Null pointer to state machine provided
+    }
+    if (sm->is_initialised == false)
+    {
+        return 2; // Error: State machine not initialised
+    }
+    if (sm->current_state == NULL)
+    {
+        return 3; // Error: Current state is NULL
+    }
+    if (*(sm->current_state) >= sm->state_count)
+    {
+        return 4; // Error: Current state ID is out of bounds
+    }
+    if (sm->substate_count != 0)
+    {
+        if (sm->current_substate == NULL)
+        {
+            return 5; // Error: Current substate is NULL but substates are defined
+        }
+        if (*(sm->current_substate) >= sm->substate_count)
+        {
+            return 6; // Error: Current substate ID is out of bounds
+        }
+    }
+    else if (sm->current_substate != NULL)
+    {
+        return 7; // Error: Current substate is set but no substates are defined
+    }
+
+
+    if (sm->states[*(sm->current_state)].loop != NULL)
+    {
+        uint8_t ret = sm->states[*(sm->current_state)].loop();
+        if (ret != 0)
+        {
+            return 0b00010000 + ret; // Error: Loop function of current state failed
+        }
+    }
+
+    if (sm->current_substate != NULL && sm->substate_count != 0)
+    {
+        if (sm->substates[*(sm->current_substate)].loop != NULL)
+        {
+            uint8_t ret = sm->substates[*(sm->current_substate)].loop();
+            if (ret != 0)
+            {
+                return 0b01000000 + ret; // Error: Loop function of current substate failed
+            }
+        }
+    }
+    return 0; // Success
+}
+
 uint8_t get_current_state(state_machine_t *sm, uint8_t *current_state, uint8_t *current_substate)
 {
     if (sm == NULL)
