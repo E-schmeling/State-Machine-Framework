@@ -1,5 +1,24 @@
+/**
+ * @file stateMachine.c
+ * @brief State machine implementation in C.
+ * @author ERS
+ *
+ * This module provides a basic framework for a state machine with enter, loop, and exit functions.
+ * The state machine can handle both states and substates, allowing for hierarchical state management.
+ * There is a maximum of 2^8 states and 2^8 substates, with the state and substate IDs being sequentially assigned starting from 0.
+ */
 
+ /** =======================================================================
+ *  Routine Defines
+ *  =======================================================================
+ */
 #include "stateMachine.h"
+
+/** =======================================================================
+ *  Public API
+ *  ========================================================================
+ *  See `serial_console.h` for documentation.
+ */
 
 uint8_t init_state_machine(state_machine_t *stateMachine, state_t *states, substate_t *substates, uint8_t state_count, uint8_t substate_count)
 {
@@ -199,7 +218,6 @@ uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_s
         return 0; // Success
     }
 }
-
 
 uint8_t run_state_machine(state_machine_t *sm)
 {

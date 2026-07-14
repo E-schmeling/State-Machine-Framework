@@ -1,11 +1,49 @@
+/**
+ * @file stateMachine.h
+ * @brief State machine implementation in C.
+ * @author ERS
+ *
+ * This module provides a basic framework for a state machine with enter, loop, and exit functions.
+ * The state machine can handle both states and substates, allowing for hierarchical state management.
+ * There is a maximum of 2^8 states and 2^8 substates, with the state and substate IDs being sequentially assigned starting from 0.
+ */
+
+#ifndef STATE_MACHINE_H
+#define STATE_MACHINE_H
+
+/** =======================================================================
+ *  Routine Defines
+ *  =======================================================================
+ */
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 
 
 
+ 
+/** =======================================================================
+ *  Public Type Definitions
+ *  =======================================================================
+ */
+
+/**
+ * @brief Function pointer type for state functions (enter, loop, exit).
+ * 
+ * @return Return code indicating the result of the function execution. 0 indicates success, non-zero indicates an error.
+ *         These errors have a maximum value of 15, so they can be combined with the error codes of the state machine 
+ *          functions to provide more context.
+ */
 typedef uint8_t (*state_func_t)(void);
 
+/**
+ * @brief Represents a state in the state machine.
+ * 
+ * - 'state_id' is the unique identifier for the state
+ * - 'enter'    is a function pointer to the enter function of the state
+ * - 'loop'     is a function pointer to the loop function of the state
+ * - 'exit'     is a function pointer to the exit function of the state
+ */
 typedef struct
 {
     uint8_t state_id;
@@ -13,9 +51,17 @@ typedef struct
     state_func_t enter;
     state_func_t loop;
     state_func_t exit;
-
 } state_t;
 
+/**
+ * @brief Represents a substate in the state machine.
+ * 
+ * - 'substate_id'     is the unique identifier for the substate
+ * - 'parent_state_id' is the ID of the parent state
+ * - 'enter'           is a function pointer to the enter function of the substate
+ * - 'loop'            is a function pointer to the loop function of the substate
+ * - 'exit'            is a function pointer to the exit function of the substate
+ */
 typedef struct
 {
     uint8_t substate_id;
@@ -25,10 +71,19 @@ typedef struct
     state_func_t enter;
     state_func_t loop;
     state_func_t exit;
-
 } substate_t;
 
-
+/**
+ * @brief Represents the state machine.
+ * 
+ * - 'current_state'     is a pointer to the current state ID
+ * - 'current_substate'  is a pointer to the current substate ID
+ * - 'states'            is a pointer to the array of states
+ * - 'substates'         is a pointer to the array of substates
+ * - 'state_count'       is the number of states in the states array
+ * - 'substate_count'    is the number of substates in the substates array
+ * - 'is_initialised'    indicates whether the state machine has been initialised
+ */
 typedef struct
 {
     uint8_t* current_state;
@@ -45,7 +100,10 @@ typedef struct
 
 
 
-
+/** =======================================================================
+ *  Public Function Definitions
+ *  =======================================================================
+ */
 /** @brief initialises the state machine with the provided states and substates. 
  * 
  * Based on this format, the state machine needs to include an init state and an init substate. each of these can have an enter function. 
@@ -71,8 +129,6 @@ typedef struct
  */
 uint8_t init_state_machine(state_machine_t* stateMachine, state_t* states, substate_t* substates, uint8_t state_count, uint8_t substate_count);
 
-
-
 /**
  * @brief Transitions the state machine to a new state and substate.
  * 
@@ -94,7 +150,6 @@ uint8_t init_state_machine(state_machine_t* stateMachine, state_t* states, subst
  *          0b01000000 + ret:   Error: Exit function of current substate failed (ret is the return value of the exit function)
  *          0b10000000 + ret:   Error: Enter function of new substate failed (ret is the return value of the enter function)
  */
-
 uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_substate);
 
 /**
@@ -119,7 +174,6 @@ uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_s
  */
 uint8_t run_state_machine(state_machine_t *sm);
 
-
 /**
  * @brief Gets the current state and substate of the state machine.
  * 
@@ -135,3 +189,5 @@ uint8_t run_state_machine(state_machine_t *sm);
  *          2: Error: State machine not initialised
  */
 uint8_t get_current_state(state_machine_t *sm, uint8_t *current_state, uint8_t *current_substate);
+
+#endif // STATE_MACHINE_H
