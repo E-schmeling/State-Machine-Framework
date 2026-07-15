@@ -153,6 +153,34 @@ uint8_t init_state_machine(state_machine_t* stateMachine, state_t* states, subst
  */
 uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_substate);
 
+
+
+/**
+ * @brief Transitions the state machine to a new state and substate.
+ *        This was added because I realised that my original lead to doing &states[STATE], which is not what I intended 
+ *        This nearly directly calls the above transtition
+ * 
+ * @param sm Pointer to the state machine
+ * @param new_state int of the new state to transition to.
+ * @param new_substate int to the new substate to transition to.
+ * 
+ * @return Return Codes:
+ *          0:                  Success
+ *          1:                  Error: Null pointer to state machine provided
+ *          2:                  Error: State machine not initialised
+ *          3:                  Error: Null pointer to new state provided
+ *          4:                  Error: New state ID is out of bounds
+ *          5:                  Error: New substate ID is out of bounds
+ *          6:                  Error: State only machine is configured incorrectly
+ *          7:                  Error: New substate does not belong to the new state
+ *          0b00010000 + ret:   Error: Exit function of current state failed (ret is the return value of the exit function)
+ *          0b00100000 + ret:   Error: Enter function of new state failed (ret is the return value of the enter function)
+ *          0b01000000 + ret:   Error: Exit function of current substate failed (ret is the return value of the exit function)
+ *          0b10000000 + ret:   Error: Enter function of new substate failed (ret is the return value of the enter function)
+ */
+uint8_t transition_toNum(state_machine_t *sm, uint8_t new_state, uint8_t new_substate);
+
+
 /**
  * @brief Runs the state machine by executing the loop functions of the current state and substate.
  * 

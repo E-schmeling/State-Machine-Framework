@@ -17,9 +17,8 @@
 /** =======================================================================
  *  Public API
  *  ========================================================================
- *  See `serial_console.h` for documentation.
+ *  See `stateMachine.h` for documentation.
  */
-
 uint8_t init_state_machine(state_machine_t *stateMachine, state_t *states, substate_t *substates, uint8_t state_count, uint8_t substate_count)
 {
     if (stateMachine == NULL || states == NULL)
@@ -222,6 +221,31 @@ uint8_t transition_to(state_machine_t *sm, state_t *new_state, substate_t *new_s
         *(sm->current_substate) = new_substate->substate_id;
         return 0; // Success
     }
+}
+
+uint8_t transition_toNum(state_machine_t *sm, uint8_t new_state, uint8_t new_substate)
+{
+    if (sm == NULL)
+    {
+        return 1; // Error: Null pointer to state machine provided
+    }
+    if (sm->is_initialised == false)
+    {
+        return 2; // Error: State machine not initialised
+    }
+    if (new_state >= sm->state_count)
+    {
+        return 4; // Error: New state ID is out of bounds
+    }
+    if (sm->substate_count == 0)
+    {
+        return transition_to(sm, &sm->states[new_state], NULL);
+    }
+    if (new_substate >= sm->substate_count)
+    {
+        return 5; // Error: New substate ID is out of bounds
+    }
+    return transition_to(sm, &sm->states[new_state], &sm->substates[new_substate]);
 }
 
 uint8_t run_state_machine(state_machine_t *sm)
