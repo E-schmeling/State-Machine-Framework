@@ -115,14 +115,15 @@ typedef struct
  * @param substate_count Number of substates in the substates array
  * 
  * @return Return Codes:
- *          0: Success
- *          1: Error: Null pointer provided
- *          2: Error: No states provided
- *          3: Error: State IDs are not in the correct order
+ *          0:                  Success
+ *          1:                  Error: Null pointer provided
+ *          2:                  Error: No states provided
+ *          3:                  Error: State IDs are not in the correct order
  *          4:                  Error: Null pointer to substates provided but substate_count is not zero
  *          5:                  Error: Substate IDs are not in the correct order
  *          6:                  Error: Init state should not have exit or loop functions
  *          7:                  Error: Init substate should not have exit or loop functions
+ *          8:                  Error: Substate with ID 0 should be the only substate with parent_state_id 0
  *          0b00010000 + ret:   Error: Enter function of init state failed (ret is the return value of the enter function)
  *          0b00100000 + ret:   Error: Enter function of init substate failed (ret is the return value of the enter function)
  * 

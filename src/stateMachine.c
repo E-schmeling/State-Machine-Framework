@@ -52,6 +52,11 @@ uint8_t init_state_machine(state_machine_t *stateMachine, state_t *states, subst
         {
             return 5; // Error: Substate IDs are not in the correct order
         }
+        if (substates[i].parent_state_id ==0 && i != 0 )
+        {
+            return 8; // Error: Substate with ID 0 should be the only substate with parent_state_id 0
+        }
+        
     }
     stateMachine->substates = substates;
     stateMachine->substate_count = substate_count;
