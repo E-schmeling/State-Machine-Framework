@@ -207,9 +207,9 @@ uint8_t run_state_machine(state_machine_t *sm);
  * @brief Gets the current state and substate of the state machine.
  * 
  * @param sm Pointer to the state machine
- * @param current_state Pointer to a variable to store the current state ID (can be NULL
+ * @param[out] current_state Pointer to a variable to store the current state ID (can be NULL
  * if not needed)
- * @param current_substate Pointer to a variable to store the current substate ID (can
+ * @param[out] current_substate Pointer to a variable to store the current substate ID (can
  * be NULL if not needed)
  * 
  * @return Return Codes:
